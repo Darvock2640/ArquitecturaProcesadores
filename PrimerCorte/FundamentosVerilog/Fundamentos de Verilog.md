@@ -7,7 +7,7 @@
 * **Ubicar y Rutear** Consiste en la construcción del prototipo bien sea en protoboard o en silicio y su función parte de la utilización de los recursos.
 * **Verificación** Comprobar la funcionalidad del prototipo.
 * **Fabricación** Enviar aproducción el diseño digital 
-## Ejemnplo:
+## Ejemplo:
 * **Especificación**: diseñar un circuito que detecte números primos en los primeros 7 número naturales, El circuito debe ser capaz de entregar su respuesta en menos de 200ns.
 * **Diseño funcional**
 
@@ -134,4 +134,68 @@ ABC_TB = 2’b00; 	// ABC_TB will be assigned 3’b000. A leading bit is automat
 ABC_TB = 5; 		// ABC_TB will be assigned 3’b101. The integer is truncated to 3-bits.
 ABC_TB = 8; 		// ABC_TB will be assigned 3’b000. The integer is truncated to 3-bits.
 ```
+## Construcción de módulos en Verilog 
+Un diseño en Verilog describe un sistema sencillo en un único archivo, este tiene la extensión “.v”. Dentro del archivo la descripción es contenida en un módulo el cual contiene la interfaz del sistema (entradas, salida, etc …) y la descripción del comportamiento: 
+![ModulosVerilog](images/ModulosVerilog.png)
 
+### El módulo
+Todos los sistemas en Verilog están encapsulados dentro de un módulo el cual puede incluir instanciaciones de módulos de bajo nivel de forma que se puedan realizar diseños de forma jerárquica, las palabras reservadas ***module*** y ***endmodule*** representan el principio y fin de la descripción de un sistema, la sintaxis de los módulos es: 
+
+```verilog
+module module_name (port_list and port_definitions); 
+// module_items
+Endmodule
+```
+
+### Definición de puertos 
+El primer elemento a tener en cuenta en un módulo es la definición de entradas y salidas o de los puertos, estos deben tener un nombre que es susceptible a mayúsculas y minúsculas y deben iniciar con una letra, un sentido y un tipo. 
+
+El sentido puede ser ***in***, ***out***, ***inout***.
+
+Los puertos pueden ser definidos de cualquier tipo mencionado anteriormente pero únicamente los ***wire***, ***reg*** y ***integer*** son sintetizables.
+
+Ejemplo:
+
+![DeclaracionPuertos](images/DefinicionPuertos.png)
+
+### Declaración de señales
+Las señales son usadas para conexiones internas, deben ser declaradas antes de usarlas y requieren de un tipo y de un nombre o identificador. Su sintaxis es:
+```verilog
+<type> name;
+```
+Ejemplo:
+```verilog
+wire node1; 		    // declare a signal named “node1” of type wire
+reg Q2, Q1, Q0; 		// declare three signals named “Q2”, “Q1”, and “Q0”, all of type reg
+wire [63:0] bus1; 		// declare a 64-bit vector named “bus1” with all bits of type wire
+integer i,j; 		    // declare two integers called “i” and “j”
+```
+Verilog soporta diseños con aproximación jerárquica por lo cual se hace necesario utilizar señales para conectar los subsistemas existentes en el módulo, ejemplo:
+
+![ADC](images/SeñalesSistemas.png)
+
+* Las señales ***ni*** y ***n2*** son declaradas internamente en el sistema 3. 
+
+* la señal interna n1 puede llamarse exactamente igual que la señal externa n1.
+
+* no es necesario declarar señales para conectar los puertos del sistema con los puertos del subsistema. 
+
+* Los puertos de entrada de los subsistemas sepueden llamar de la misma forma ya que son módulos completamente independientes.
+
+### Declaración de parámetros
+Un parámetro o constante es un elemento útil para representar cantidades que serán usadas varias veces en la arquitectura, su sintaxis es:
+
+```verilog
+parameter <type> constant_name = <value>;
+```
+el parámetro es opcional y únicamente puede ser: **integer**, **time**, **real**, **realtime**, si el tipo es omitido, el parámetro obtendrá por defecto el tipo del valor asignado, ejemplo:
+```verilog
+parameter BUS_WIDTH = 64;
+parameter NICKEL = 8’b0000_0101;
+```
+
+Una vez declaradas las variables estas pueden ser usadas en todo el módulo de la siguiente manera:
+```verilog
+wire [BUS_WIDTH-1:0] BUS_A; 
+```
+En el ejemplo anterior notamos que se usa el parámetro para definir el tamaño del vector, si asumimos que ***BUS_WIDTH*** tiene un valor de 64 entonces ***BUS_A*** tendrá un tamaño de 64 bits. Se debe tener en cuenta que al valor ***BUS_WIDTH*** se le debe restar 1 ya que el inicio del índice del vector es 0.

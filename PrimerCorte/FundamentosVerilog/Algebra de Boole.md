@@ -17,7 +17,7 @@ Una multiplicación será igual a cero cuando al menos uno de sus términos sea 
 ![adc](images/MultiplicacionBooleana.png)
 ## Leyes del algebra de Boole
 ### Ley conmutativa 
-![adc](images/Leyconmutativa.png)
+![ley conmutativa](images/Leyconmutativa.png)
 ### Ley Asociativa
 ![adc](images/LeyAsociativa.png)
 ### Ley Distributiva

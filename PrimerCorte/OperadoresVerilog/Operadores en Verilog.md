@@ -169,7 +169,7 @@ Ejemplo
 
 Implementar un circuito digital combinacional cuyo comportamiento sea el siguiente:
 
-![TablaX](images/Tablax.png)
+aqui va la tabla
 
 * Diagrama en bloques
 

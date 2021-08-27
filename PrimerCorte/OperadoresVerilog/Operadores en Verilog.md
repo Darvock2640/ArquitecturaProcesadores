@@ -209,7 +209,7 @@ endmodule
 ```
 Opción 2
 ```verilog
-module SistemaX(input wire A, B, C
+module SistemaX(input wire A, B, C,
                 output wire F);
 
 assign F = (( !A && !B && !C) || ( !A && B && !C) || ( A && B && !C)) ? 1'b1 : 1'b0; 

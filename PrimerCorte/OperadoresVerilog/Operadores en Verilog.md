@@ -169,7 +169,7 @@ Ejemplo
 
 Implementar un circuito digital combinacional cuyo comportamiento sea el siguiente:
 
-aqui va la tabla
+![Tabla de verdad](images/TablaX.png)
 
 * Diagrama en bloques
 

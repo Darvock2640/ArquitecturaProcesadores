@@ -1,5 +1,5 @@
 # Flujo de diseño digital 
-***Aqui va la imagen del diseño***
+![Flujo de diseño digital](images/FlujoDiseñoDigital.png)
 * **Especificación** Es la descripción detallada del comportamiento deseado en el circuito digital.
 * **Diseño funcional** Describe a partir de diagramas de bloques y tablas de verdad la arquitectura del diseño y el comportamiento general.
 * **Síntesis** Crea el circuito esquemático del diseño digital, es decir creal el circuito con sus respectivas compuertas y caminos.

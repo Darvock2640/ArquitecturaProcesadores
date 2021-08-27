@@ -185,7 +185,7 @@ Implementar un circuito digital combinacional cuyo comportamiento sea el siguien
 
 * Verilog 
 ```verilog
-module SistemaX(input wire A, B, C
+module SistemaX(input wire A, B, C,
                 output wire F);
 
 // Señales
@@ -212,7 +212,7 @@ Opción 2
 module SistemaX(input wire A, B, C
                 output wire F);
 
-F = (( !A && !B && !C) || ( !A && B && !C) || ( A && B && !C)) ? 1’b1 : 1’b0; 
+assign F = (( !A && !B && !C) || ( !A && B && !C) || ( A && B && !C)) ? 1'b1 : 1'b0; 
 
 endmodule
 ```

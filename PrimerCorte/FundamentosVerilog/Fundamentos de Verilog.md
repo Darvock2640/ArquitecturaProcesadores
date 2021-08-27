@@ -61,7 +61,7 @@ Los tipos de dato de red (**NET**) modelan una interconexión entre componentes 
 ### Tipos de datos de variables 
  Verilog contiene tipos de datos para modelar almacenamiento. Estas variables pueden tomar valores de 0, 1, X, Z pero no tienen asociado ninguna fuerza. Las variables mantendrán su valor hasta no ser actualizadas.
  
- ![adc](images/VariableDatatypes.png)
+ Aqui van los tipos
 
  ### Vectores
  En Verilog, un vector es un arreglo unidimensional de elementos. Todos los datos tipo **NET** y las variables del tipo **reg** pueden ser usadas en forma de vectores. Su sintaxis es:

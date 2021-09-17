@@ -25,6 +25,7 @@ En el mapeo, de puertos los nombres de lo puertos del subsistema se escriben o r
 nombre_modulo <indeficador_modulo> (.puerto1(señal1), .puerto2(señal2), ... .puertoN(señalN));
 ```
 Ejemplo:
+
 ![Sistema1 sub1 y sub2](images/d1.png)
 
 ```verilog

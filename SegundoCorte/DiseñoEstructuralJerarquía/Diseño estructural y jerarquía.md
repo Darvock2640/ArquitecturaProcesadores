@@ -118,22 +118,22 @@ primitive test_table (
 	input		A,B,C
 );
 	table 
-		//  A B C : F
-		    0 0 0 : 1;
-			0 0 1 : 0;
-			0 1 0 : 1;
-			0 1 1 : 0;
-			1 0 0 : 0;
-			1 0 1 : 0;
-			1 1 0 : 1;
-			1 1 1 : 0;
+	    //  A B C : F
+	    	0 0 0 : 1;
+		0 0 1 : 0;
+		0 1 0 : 1;
+		0 1 1 : 0;
+		1 0 0 : 0;
+		1 0 1 : 0;
+		1 1 0 : 1;
+		1 1 1 : 0;
 	endtable 
 endprimitive 
 ```
 ```verilog
 module test(
 	input	wire	A,B,C,
-	output	reg	    F
+	output	reg	F
 );
 
 test_table U0(.A(A), .B(B), .C(C), .F(F));

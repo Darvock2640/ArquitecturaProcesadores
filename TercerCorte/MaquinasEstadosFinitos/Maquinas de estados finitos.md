@@ -25,10 +25,10 @@ Se necesita abrir o cerar una ventana a partír de un solo botón, el sistema po
 Solución:
 
 ### Diagrama de bloques 
-![Bloc diagram](images/Blockdiagram.PNG)
+![Bloc diagram](images/Blockdiagram.png)
 
 ### Diagrama de estados 
-![state Diagram](images/stateDiagram.PNG)
+![state Diagram](images/stateDiagram.png)
 
 ### Implementación de máquinas de estados en Verilog 
 

@@ -376,3 +376,96 @@ module Register8bits (
 		end
 endmodule 
 ```
+## Registros como agentes en un bus de datos 
+Una de las topologías más poderosas que se pueden implementar con registros es un bus multi-drop (multidescarga). en esta topología, multip´les registros están conectados al mismo bus de datos como receptores o agentes. Cada agente tiene una linea de habilitación ***(Enable)*** que controla si la información contenida en el bus de datos es almacenada. 
+
+Esta topología es sincrona, lo que significa que cada agente y el driver del bus de datos están conectados a la misma linea de reloj.
+
+![Data bus](images/DataBus.png)
+
+```verilog
+// MultiDropBus
+module MultiDropBus(
+	input		wire	[7:0]bus,
+	input 	wire	[2:0]En,
+	input		wire	CLK, R,
+	output	reg	[7:0]A,
+	output	reg	[7:0]B,
+	output	reg	[7:0]C
+);
+
+	always @(posedge CLK, negedge R)
+		begin: RegA
+			if(R == 0)
+				A <= 8'h00;
+			else
+				if(En[0] == 1)
+					A <= bus;
+		end
+
+	always @(posedge CLK, negedge R)
+		begin: RegB
+			if(R == 0)
+				B <= 8'h00;
+			else
+				if(En[1] == 1)
+					B <= bus;
+		end
+
+	always @(posedge CLK, negedge R)
+		begin: RegC
+			if(R == 0)
+				C <= 8'h00;
+			else
+				if(En[2] == 1)
+					C <= bus;
+		end
+endmodule
+```
+```verilog
+// MultiDropBus test bench
+
+`timescale 10ns/1ps
+
+module MultiDropBus_TB;
+
+	reg	[7:0]bus;
+	reg	[2:0]En;
+	reg	CLK, R;
+	wire	[7:0]A;
+	wire	[7:0]B;
+	wire	[7:0]C;
+
+	MultiDropBus DUT(.bus(bus), .En(En), .CLK(CLK), .R(R), .A(A), .B(B), .C(C));
+	
+	initial
+		begin
+				bus = 0; En = 0; CLK = 0; R = 0;
+			#5;
+				R = 1;
+			#5;
+				bus = 7;
+				En = 3'b001;
+				#2;
+				En = 0;
+			#10;
+				bus = 15;
+				En = 3'b010;
+				#2;
+				En = 0;
+			#10;
+				bus = 127;
+				En = 3'b100;
+				#2;
+				En = 0;
+				bus = 255;
+			#10;
+			$stop;
+		end
+	always
+		begin
+			#1	CLK = ~CLK;
+		end
+	
+endmodule 
+```

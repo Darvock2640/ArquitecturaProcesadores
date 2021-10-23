@@ -377,95 +377,102 @@ module Register8bits (
 endmodule 
 ```
 ## Registros como agentes en un bus de datos 
-Una de las topologías más poderosas que se pueden implementar con registros es un bus multi-drop (multidescarga). en esta topología, multip´les registros están conectados al mismo bus de datos como receptores o agentes. Cada agente tiene una linea de habilitación ***(Enable)*** que controla si la información contenida en el bus de datos es almacenada. 
+Una de las topologías más poderosas que se pueden implementar con registros es un bus multi-drop (multidescarga). en esta topología, multiples registros están conectados al mismo bus de datos como receptores o agentes. Cada agente tiene una linea de habilitación ***(Enable)*** que controla si la información contenida en el bus de datos es almacenada en ese registro. 
 
 Esta topología es sincrona, lo que significa que cada agente y el driver del bus de datos están conectados a la misma linea de reloj.
 
 ![Data bus](images/DataBus.png)
-
 ```verilog
-// MultiDropBus
+// MultidropBus
+
 module MultiDropBus(
-	input		wire	[7:0]bus,
-	input 	wire	[2:0]En,
-	input		wire	CLK, R,
-	output	reg	[7:0]A,
-	output	reg	[7:0]B,
-	output	reg	[7:0]C
+	input		wire	[7:0] bus,
+	input 	wire 	CLK, R,
+	input		wire	[2:0] E,
+	output	reg	[7:0] A,
+	output	reg	[7:0] B,
+	output	reg	[7:0] C
 );
 
 	always @(posedge CLK, negedge R)
 		begin: RegA
 			if(R == 0)
 				A <= 8'h00;
-			else
-				if(En[0] == 1)
+			else 
+				if(E[0] == 1'b1)
 					A <= bus;
 		end
-
+		
 	always @(posedge CLK, negedge R)
 		begin: RegB
 			if(R == 0)
 				B <= 8'h00;
-			else
-				if(En[1] == 1)
+			else 
+				if(E[1] == 1'b1)
 					B <= bus;
 		end
-
+	
 	always @(posedge CLK, negedge R)
 		begin: RegC
 			if(R == 0)
 				C <= 8'h00;
-			else
-				if(En[2] == 1)
+			else 
+				if(E[2] == 1'b1)
 					C <= bus;
 		end
-endmodule
+endmodule 
 ```
 ```verilog
 // MultiDropBus test bench
 
 `timescale 10ns/1ps
 
-module MultiDropBus_TB;
+module MultiDropBus_TB ;
 
-	reg	[7:0]bus;
-	reg	[2:0]En;
-	reg	CLK, R;
-	wire	[7:0]A;
-	wire	[7:0]B;
-	wire	[7:0]C;
-
-	MultiDropBus DUT(.bus(bus), .En(En), .CLK(CLK), .R(R), .A(A), .B(B), .C(C));
+	reg	[7:0] bus;
+	reg 	CLK, R;
+	reg	[2:0] E;
+	wire	[7:0] A;
+	wire	[7:0] B;
+	wire	[7:0] C;
+	
+	MultiDropBus DUT(.bus(bus), .CLK(CLK), .R(R), .E(E), .A(A), .B(B), .C(C));
 	
 	initial
 		begin
-				bus = 0; En = 0; CLK = 0; R = 0;
-			#5;
+				bus = 0; CLK = 0; R = 0; E = 0; 
+			#1;
 				R = 1;
-			#5;
+			#9;
 				bus = 7;
-				En = 3'b001;
-				#2;
-				En = 0;
-			#10;
-				bus = 15;
-				En = 3'b010;
-				#2;
-				En = 0;
-			#10;
+				E = 3'b001;
+			#4;
+				bus = 0;
+				E = 3'b000;
+			#4;
 				bus = 127;
-				En = 3'b100;
-				#2;
-				En = 0;
+				E = 3'b010;
+			#4;
+				bus = 0;
+				E = 3'b000;
+			#4;
 				bus = 255;
-			#10;
-			$stop;
-		end
-	always
-		begin
-			#1	CLK = ~CLK;
+				E = 3'b100;
+			#4;
+				bus = 0;
+				E = 3'b000;
+			#4;
+				bus = 54;
+				E = 3'b000;
+			#4;
+				bus = 0;
+				E = 3'b000;
+			$stop;			
 		end
 	
+	always
+		begin
+			#1; CLK = ~CLK;
+		end
 endmodule 
 ```

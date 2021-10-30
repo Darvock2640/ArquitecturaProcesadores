@@ -1,5 +1,6 @@
 # Modelamiento de memoria 
 El modelamiento de memoria en verilog se realiza en forma matricial y puede ser sintetizada en una amplia gama de dispositivos ***"Semiconductor Memory"***. 
+
 ## Arquitectura y terminología 
 El termino **memoria** es usado para describir un sistema con la habilidad de almacenar información digital. 
 
@@ -31,7 +32,7 @@ La memoria volatil es capaz de correr a velocidades más altas comparada con una
 ### Read-Only vs Read/Write Memory - memoria de solo lectura vs memoria lectura/escritura
 La memoria también puede ser clasificada en dos categorías con respecto a como son accedidos los datos. La ***ROM (Read only memory - memoria de solo lectura)*** es un dispositivo que no puede ser escrito durante una operación normal. Este tipo de memoria es útil para contener información crítica del sistema o programas que no deben ser alterados mientras el sistema está en funcionamiento.
 
-La memoria ***Read/write*** se refiere a memoria que puede ser escrita y leída durante una operación normal y es usada para almacenar datos temporales y variables. 
+La memoria ***Read/Write*** se refiere a memoria que puede ser escrita y leída durante una operación normal y es usada para almacenar datos temporales y variables. 
 
 ### Random Acces vs Sequential Acces - Acceso Aleatorio vs Acceso Secuencial
 ***Random Access Memory (RAM) - Memoria de acceso aleatorio*** describe una memoria en la cual cualquier posición puede ser accesada en cualquier momento. La memoria opuesta es de ***Sequential access - Acceso Secuencial***, en esta no todas las direcciones estan inmediatamente disponibles. 
@@ -44,7 +45,7 @@ Cuando se describen sistemas modernos de memoria, los términos RAM y ROM son us
 
 ## Modelamiento de memoria Read/Write - RW
 ### RW asíncrona
-En un modelo simple de memoria Read/Write, existe un puerto de salida que provee el dato cuando este es leido y un puerto de entrada que recibe el dato cuando se realiza una escritura. Ya dentro del módulo en verilog se tiene un arreglo de señales del tipo reg para modelar el almacenamiento digital de información.
+En un modelo simple de memoria Read/Write, existe un puerto de salida que provee el dato cuando este es leído y un puerto de entrada que recibe el dato cuando se realiza una escritura. Ya dentro del módulo en verilog se tiene un arreglo de señales del tipo reg para modelar el almacenamiento digital de información.
 
 Para escribir el arreglo se necesitan el puerto de entrada de datos, el puerto de entrada de dirección y que el valor del puerto **WE = 1** ***(WE -> Write Enable - habilitación de escritura)***. 
 
@@ -62,142 +63,148 @@ Se modelará una memoria RW 4x4 asincrona que cumpla con el siguiente esquema
 
 ```verilog
 // RW_AS_4x4
-module RW_AS(
-	input 	wire	[3:0] DataIn,
-	input		wire	[1:0]	addres,
+
+module RW_AS (
+	input		wire	[3:0]	DataIn,
+	input		wire	[1:0]	address,
 	input		wire	WE,
-	output	reg	[3:0]	DataOut
+	output	reg	[3:0] DataOut
 );
 
-	reg [3:0] RW[0:3];
-
-	always @(addres, WE, DataIn)
-		if(WE == 1'b1)
-			RW[addres] = DataIn;
+	reg	[3:0]	RW [0:3];
+	
+	always @(DataIn, address, WE)
+		if (WE == 1'b1)
+			RW[address] = DataIn;
 		else
-			DataOut = RW[addres];
+			DataOut = RW[address];
 endmodule 
 ```
 ![RW asincrona](images/RW_As_1.png)
 
 ```verilog
-// RW_4x4_AS TB
+// RW_AS_4x4_TB
 
 `timescale 10ns/1ps
 
 module RW_AS_TB;
 
-	reg	[3:0] DataIn;
-	reg	[1:0]	addres;
+	reg	[3:0]	DataIn;
+	reg	[1:0]	address;
 	reg	WE;
-	wire	[3:0]	DataOut;
+	wire	[3:0] DataOut;
 	
-	RW_AS DUT(.DataIn(DataIn), .WE(WE), .addres(addres), .DataOut(DataOut));
+	RW_AS DUT(.DataIn(DataIn), .address(address), .WE(WE), .DataOut(DataOut));
 	
 	initial
 		begin
-					DataIn = 0; addres = 0; WE = 1;
-					#2 addres = 1;
-					#2 addres = 2;
-					#2 addres = 3;
-					
-					#2 WE = 0; addres = 0;
-					#2 addres = 1;
-					#2 addres = 2;
-					#2 addres = 3;
-					
-					#2 WE = 1;
-					   addres = 0; DataIn = 15;
-					#2 addres = 1; DataIn = 7;
-					#2 addres = 2; DataIn = 3;
-					#2 addres = 3; DataIn = 1;
-					
-					#2 WE = 0; addres = 0;
-					#2 addres = 1;
-					#2 addres = 2;
-					#2 addres = 3;
-
-					#2;
-					
+				// Escribiendo ceros en todas las posiciones de memoria
+					DataIn = 0; WE = 1; address = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				// leer todas las posiciones de memoria (en todas se espera un 0000)
+				#2	WE = 0; address = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				// Escribiendo en todas las posiciones de memoria
+				#2	WE = 1; 
+					address = 0; DataIn = 15;
+				#2 address = 1; DataIn = 7;
+				#2 address = 2; DataIn = 3;
+				#2 address = 3; DataIn = 1;
+				
+				// leer todas las posiciones de memoria 
+				#2	WE = 0; address = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				#2;
 		end
-
 endmodule 
 ```
 
 ### RW síncrona 
-En el caso de una memoria RW sincrona la única diferencia con respecto a la asíncrona es que en la lista sensitiva del bloque procedimental únicamente se coloca el flanco de la señal de reloj. 
+En el caso de una memoria RW síncrona la única diferencia con respecto a la asíncrona es que en la lista sensitiva del bloque procedimental únicamente se coloca el flanco de la señal de reloj. 
 
 Ejemplo 
+
 RW sincrona de 4x4
 
 ![RW sincrona](images/RW_SY.png)
 
 ```verilog
 // RW_SY_4x4
-module RW_SY(
-	input 	wire	[3:0] DataIn,
-	input		wire	[1:0]	addres,
+
+module RW_SY (
+	input		wire	[3:0]	DataIn,
+	input		wire	[1:0]	address,
 	input		wire	WE, CLK,
-	output	reg	[3:0]	DataOut
+	output	reg	[3:0] DataOut
 );
 
-	reg [3:0] RW[0:3];
+	reg	[3:0]	RW [0:3];
 	
 	always @(posedge CLK)
-		if(WE == 1'b1)
-			RW[addres] = DataIn;
+		if (WE == 1'b1)
+			RW[address] = DataIn;
 		else
-			DataOut = RW[addres];
-endmodule 
+			DataOut = RW[address];
+endmodule
 ```
 ![RW sincrona](images/RW_SY_1.png)
-
 ```verilog
-// RW_4x4_SY TB
+// RW_SY_4x4_TB
 
 `timescale 10ns/1ps
 
 module RW_SY_TB;
 
-	reg	[3:0] DataIn;
-	reg	[1:0]	addres;
+	reg	[3:0]	DataIn;
+	reg	[1:0]	address;
 	reg	WE, CLK;
-	wire	[3:0]	DataOut;
+	wire	[3:0] DataOut;
 	
-	RW_SY DUT(.DataIn(DataIn), .WE(WE), .CLK(CLK), .addres(addres), .DataOut(DataOut));
+	RW_AS DUT(.DataIn(DataIn), .address(address), .WE(WE), .CLK(CLK), .DataOut(DataOut));
 	
 	initial
 		begin
-				WE = 1; DataIn = 0; addres = 0; CLK = 0;
-			#2 addres = 1; 
-			#2 addres = 2; 
-			#2 addres = 3; 
-						
-			#2	WE = 0; 
-			#2	addres = 0;
-			#2 addres = 1;
-			#2 addres = 2;
-			#2 addres = 3;
-			
-			#2	WE = 1;
-			#2 addres = 0; DataIn = 15;
-			#2 addres = 1; DataIn = 7;
-			#2 addres = 2; DataIn = 3;
-			#2 addres = 3; DataIn = 1;
-			
-			#2 WE = 0; addres = 0;
-			#2 addres = 1;
-			#2 addres = 2;
-			#2 addres = 3;
-
-			#2; $stop;
-					
+				// Escribiendo ceros en todas las posiciones de memoria
+					DataIn = 0; WE = 1; address = 0; CLK = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				// leer todas las posiciones de memoria (en todas se espera un 0000)
+				#2	WE = 0; address = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				// Escribiendo en todas las posiciones de memoria
+				#2	WE = 1; 
+					address = 0; DataIn = 15;
+				#2 address = 1; DataIn = 7;
+				#2 address = 2; DataIn = 3;
+				#2 address = 3; DataIn = 1;
+				
+				// leer todas las posiciones de memoria 
+				#2	WE = 0; address = 0;
+				#2 address = 1;
+				#2 address = 2;
+				#2 address = 3;
+				
+				#2 $stop;
 		end
+		
 	always
 		begin
 			#1 CLK = ~CLK;
 		end
-
 endmodule 
 ```
 ## Memoria de solo lectura - ROM
@@ -206,100 +213,155 @@ En la ROM asíncrona cada vez que se realiza un cambio en la dirección de entra
 
 Existen dos aproximaciones para el modelamiento de una memoria ROM. El primero es utilizar una declaración case donde cada dirección retornará el valor deseado de la memoria.
 
-ejemplo 
+Ejemplo 
 
 ![ROM asíncrona](images/ROM_AS.png)
 
 ```verilog
-// ROM_4x4_AS
+// ROM_AS_4x4
 
 module ROM_AS (
-	input		wire 	[1:0] address,
+	input		wire	[1:0] address,
 	output	reg	[3:0] DataOut
 );
 
 	always @(address)
 		case (address)
-			0 			: DataOut = 15;
-			1 			: DataOut = 7;
-			2 			: DataOut = 6;	
-			3 			: DataOut = 4;
-			default 	: DataOut = 'bXXXX;			
-		endcase		
+			0			: DataOut = 12;
+			1			: DataOut =  9;
+			2			: DataOut =  5;
+			3			: DataOut =  14;
+			default	: DataOut =  'bXXXX;		
+		endcase
 endmodule 
 ```
 ```verilog
-// ROM_AS_TB
+// ROM_AS_4x4_TB
 
 `timescale 10ns/1ps
 
 module ROM_AS_TB;
-	reg 	[1:0] address;
+	reg	[1:0] address;
 	wire	[3:0] DataOut;
 	
-	ROM_AS DUT (.address(address), .DataOut(DataOut));
+	ROM_AS DUT(.address(address), .DataOut(DataOut));
 	
 	initial
 		begin
-				   address = 0;
-				#2 address = 1;
-				#2 address = 2;
-				#2 address = 3;
-				#2;
+				address = 0;
+			#2 address = 1;
+			#2 address = 2;
+			#2 address = 3;
+			#2;
 		end
+	
 endmodule 
 ```
 
 La segunda aproximación consiste en un arreglo matricial que se pre-cargará con un bloque initial
 
-ejemplo
+Ejemplo
 
-![ROM asíncrona](images/ROM_AS.png)
+![ROM asíncrona](images/ROM_AS.png) 
 
 ```verilog
-// ROM_4x4_AS
+// ROM_AS_4x4
 
 module ROM_AS (
-	input		wire 	[1:0] address,
+	input		wire	[1:0] address,
 	output	reg	[3:0] DataOut
 );
 
-	reg [3:0] ROM[0:3];
+	reg	[3:0] ROM[0:3];
 	
 	initial
 		begin
-			ROM[0] = 15;
-			ROM[1] = 7;
-			ROM[2] = 6;
-			ROM[3] = 4;
+			ROM [0] = 14;
+			ROM [1] = 5;
+			ROM [2] = 9;
+			ROM [3] = 12;
 		end
 
 	always @(address)
 		DataOut = ROM[address];
-		
 endmodule 
 ```
-![ROM asíncrona](images/ROM_AS_1.png)
+![ROM AS](images/ROM_AS_1.png) 
+
 ```verilog
-// ROM_AS_TB
+// ROM_AS_4x4_TB
 
 `timescale 10ns/1ps
 
 module ROM_AS_TB;
-	reg 	[1:0] address;
+	reg	[1:0] address;
 	wire	[3:0] DataOut;
 	
-	ROM_AS DUT (.address(address), .DataOut(DataOut));
+	ROM_AS DUT(.address(address), .DataOut(DataOut));
 	
 	initial
 		begin
-				   address = 0;
-				#2 address = 1;
-				#2 address = 2;
-				#2 address = 3;
-				#2;
+				address = 0;
+			#2 address = 1;
+			#2 address = 2;
+			#2 address = 3;
+			#2;
 		end
 	
 endmodule 
 ```
+### ROM síncrona
+En el caso de una memoria ROM síncrona la única diferencia con respecto a la asíncrona es que en la lista sensitiva del bloque procedimental únicamente se coloca el flanco de la señal de reloj.
 
+```verilog
+// ROM_SY_4x4
+
+module ROM_SY (
+	input		wire	[1:0] address,
+	input		wire	CLK,
+	output	reg	[3:0] DataOut
+);
+
+	reg	[3:0] ROM[0:3];
+	
+	initial
+		begin
+			ROM [0] = 14;
+			ROM [1] = 5;
+			ROM [2] = 9;
+			ROM [3] = 12;
+		end
+
+	always @(posedge CLK)
+		DataOut = ROM[address];
+endmodule 
+```
+![ROM Syn](images/ROM_SY.png) 
+
+```verilog
+// ROM_SY_4x4_TB
+
+`timescale 10ns/1ps
+
+module ROM_SY_TB;
+	reg	[1:0] address;
+	reg	CLK;
+	wire	[3:0] DataOut;
+	
+	ROM_SY DUT(.address(address), .CLK(CLK), .DataOut(DataOut));
+	
+	initial
+		begin
+				address = 0; CLK = 0;
+			#2 address = 1;
+			#2 address = 2;
+			#2 address = 3;
+			#2;
+		end
+	always
+		begin
+			1# CLK = ~CLK;
+		end
+	
+endmodule 
+```

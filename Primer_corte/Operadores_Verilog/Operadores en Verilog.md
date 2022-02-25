@@ -110,7 +110,7 @@ F = ((A == 1'b0) && (B == 1'b0)) ? 1'b0 :
     ((A == 1'b1) && (B == 1'b1)) ? 1'b0;
 
 // esta condición modela la expresión F = C’(A’+B)
-F = ( (!A && B) || (A && C) ) ? 1'b1 : 1'b0; 
+F = ( (!A && !C) || (B && !C) ) ? 1'b1 : 1'b0; 
 ```
 
 ## Operadores de concatenación 

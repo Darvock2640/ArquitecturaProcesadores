@@ -118,17 +118,17 @@ Las primitivas definidas de usuario son subsistemas que describen su comportamie
 
 ```verilog
 primitive nombre_primitiva(
-    output  out1, out2, ... outN,
+    output  out1,
     input   in1, in2, ... inN 
 );
     table
-        // in1 in2 inN : out1 out2 outN
-            0   0   0  :  0    0    0;
-            0   0   1  :  0    0    1;
+        // in1 in2 inN : out1;
+            0   0   0  :  0;
+            0   0   1  :  0;
             .
             .
             .
-            1   1   1 :   1    1    1;
+            1   1   1 :   1;
     endtable
 endprimitive 
 ```

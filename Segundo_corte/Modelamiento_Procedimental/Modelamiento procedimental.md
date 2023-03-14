@@ -321,7 +321,7 @@ else
 ```
 Ejemplo:
 
-Se realizara el ejemplo de lógica combinacinal del final del tema de [operadores en verilog](https://github.com/Darvock2640/ArquitecturaProcesadores/blob/master/PrimerCorte/OperadoresVerilog/Operadores%20en%20Verilog.md)
+Se realizara el ejemplo de lógica combinacinal del final del tema de [operadores en verilog](https://github.com/Darvock2640/ArquitecturaProcesadores/blob/master/Primer_corte/Operadores_Verilog/Operadores%20en%20Verilog.md)
 
 ```verilog
 // modulo
@@ -361,7 +361,7 @@ endcase
 ```
 Ejemplo:
 
-Se realizara el ejemplo de lógica combinacinal del final del tema de [operadores en verilog](https://github.com/Darvock2640/ArquitecturaProcesadores/blob/master/PrimerCorte/OperadoresVerilog/Operadores%20en%20Verilog.md)
+Se realizara el ejemplo de lógica combinacinal del final del tema de [operadores en verilog](https://github.com/Darvock2640/ArquitecturaProcesadores/blob/master/Primer_corte/Operadores_Verilog/Operadores%20en%20Verilog.md)
 
 ```verilog
 // aprox 1

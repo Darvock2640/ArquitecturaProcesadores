@@ -1,28 +1,28 @@
-# Algebra de Boole
-El algebra de Boole es la representación matemática de los sistemas digitales 
+# Boolean Algebra
+Boolean algebra is the mathematical representation of digital systems. 
 ## Variables
-Es un símbolo (principalmente letras mayúsculas) que representa una magnitud lógica.
+It is a symbol (mainly uppercase letters) that represents a logical value.
 ```
 AB
 ```
-## Complemento
-Inverso de una variable y se denota por la barra superior de las variables 
+## Complement
+The inverse of a variable, denoted by a bar over the variable. 
 ## Literal
-Es la representación de una o más variables con o sin su complemento
-## Suma Booleana
-Una suma será igual a 1 cuando al menos uno de sus términos sea 1.
+It is the representation of one or more variables, with or without their complements.
+## Boolean addition
+A Boolean sum will be equal to 1 when at least one of its terms is 1.
 ![adc](images/SumaBooleana.png)
-## Multiplicación booleana
-Una multiplicación será igual a cero cuando al menos uno de sus términos sea igual a cero
+## Boolean multiplication
+A Boolean multiplication will be equal to zero when at least one of its terms is equal to zero.
 ![adc](images/MultiplicacionBooleana.png)
-## Leyes del algebra de Boole
-### Ley conmutativa 
+## Laws of Boolean Algebra
+### Commutative law 
 ![ley conmutativa](images/LeyConmutativa.png)
-### Ley Asociativa
+### Associative law
 ![adc](images/LeyAsociativa.png)
-### Ley Distributiva
+### Distributive law
 ![adc](images/LeyDistributiva.png)
-## Reglas del algebra de Boole
+## Rules of Boolean Algebra
 ![adc](images/Reglas1_2.png)
 ![adc](images/Regla3_4.png)
 ![adc](images/Regla5_6.png)
@@ -31,6 +31,6 @@ Una multiplicación será igual a cero cuando al menos uno de sus términos sea 
 ![adc](images/Regla10.png)
 ![adc](images/Regla11.png)
 ![adc](images/Regla12.png)
-## Teoremas de DeMorgan
+## Theorems of DeMorgan
 ![adc](images/DeMorgan1.png)
 ![adc](images/DeMorgan2.png)
